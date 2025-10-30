@@ -1,0 +1,38 @@
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+# Training the model
+def build_cnn(input_shape=(128,128,3)): model = Sequential([
+Conv2D(32, (3,3), activation='relu', input_shape=input_shape), MaxPooling2D(2,2),
+Conv2D(64, (3,3), activation='relu'), MaxPooling2D(2,2),
+Conv2D(128, (3,3), activation='relu'), MaxPooling2D(2,2),
+Flatten(),
+Dense(128, activation='relu'), Dropout(0.5),
+Dense(1, activation='sigmoid') # Binary classification
+])
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']) return model
+39
+# Evaluating the model import numpy as np
+from tensorflow.keras.models import load_model
+from sklearn.metrics import classification_report, confusion_matrix
+from config import TEST_DIR, IMG_HEIGHT, IMG_WIDTH, BATCH_SIZE,
+MODEL_SAVE_PATH
+from utils import get_data_generators
+def evaluate():
+# Load test data
+_, _, test_gen = get_data_generators(
+TEST_DIR, TEST_DIR, IMG_HEIGHT, IMG_WIDTH, BATCH_SIZE
+)
+# Load trained model
+model = load_model(MODEL_SAVE_PATH)
+# Make predictions on test data Y_pred = model.predict(test_gen) y_pred = np.round(Y_pred).astype(int)
+# Print classification metrics print("Classification Report:")
+print(classification_report(test_gen.classes, y_pred)) print("Confusion Matrix:") print(confusion_matrix(test_gen.classes, y_pred))
+# Tabs
+tab1, tab2, tab3, tab4 = st.tabs(["Upload", "Webcam", "Recent Results", "About"]) # Upload Tab
+with tab1:
+uploaded_file = st.file_uploader("Choose an image", type=["jpg","jpeg","png"]) if uploaded_file:
+st.image(Image.open(uploaded_file), caption="Uploaded Image", use_container_width=True)
+# Webcam Tab with tab2:
+camera_img = st.camera_input("Take a picture") if camera_img:
+st.image(Image.open(camera_img), caption="Camera Image", use_container_width=True)
+if name == " main ": evaluate()
