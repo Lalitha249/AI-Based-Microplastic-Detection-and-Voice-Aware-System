@@ -1,0 +1,12 @@
+import numpy as np
+from tensorflow.keras.models import load_model from tensorflow.keras.preprocessing import image
+from config import IMG_HEIGHT, IMG_WIDTH, MODEL_SAVE_PATH
+def predict_image(img_path): # Load trained model
+model = load_model(MODEL_SAVE_PATH)
+# Load and preprocess image
+img = image.load_img(img_path, target_size=(IMG_HEIGHT, IMG_WIDTH)) img_array = image.img_to_array(img) / 255.0
+img_array = np.expand_dims(img_array, axis=0)
+# Make prediction
+pred = model.predict(img_array) if pred[0][0] > 0.5:
+print(f"{img_path} -> Microplastic detected") else:
+print(f"{img_path} -> No microplastic detected. Water is safe to consume!")
